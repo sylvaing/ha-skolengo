@@ -1,0 +1,19 @@
+{
+  "data": [
+    {"id": "ag-1", "type": "agenda", "attributes": {"date": "2026-11-16"},
+     "relationships": {"lessons": {"data": [{"id": "l-2", "type": "lesson"}, {"id": "l-1", "type": "lesson"}]}}},
+    {"id": "ag-0", "type": "agenda", "attributes": {"date": "2026-11-15"}, "relationships": {"lessons": {"data": []}}}
+  ],
+  "included": [
+    {"id": "l-1", "type": "lesson",
+     "attributes": {"startDateTime": "2026-11-16T07:05:00Z", "endDateTime": "2026-11-16T08:05:00Z", "title": "HISTOIRE-GEOGRAPHIE", "location": "B21", "canceled": false, "anyHomeworkToDoForTheLesson": false},
+     "relationships": {"subject": {"data": {"id": "sub-hg", "type": "subject"}}, "teachers": {"data": [{"id": "t-3", "type": "teacher"}]}}},
+    {"id": "l-2", "type": "lesson",
+     "attributes": {"startDateTime": "2026-11-16T08:05:00Z", "endDateTime": "2026-11-16T09:00:00Z", "title": "MATHEMATIQUES", "location": "B34", "canceled": true, "anyHomeworkToDoForTheLesson": true},
+     "relationships": {"subject": {"data": {"id": "sub-ma", "type": "subject"}}, "teachers": {"data": [{"id": "t-1", "type": "teacher"}]}}},
+    {"id": "sub-ma", "type": "subject", "attributes": {"label": "MATHEMATIQUES", "color": "#185abc"}},
+    {"id": "sub-hg", "type": "subject", "attributes": {"label": "HISTOIRE-GEOGRAPHIE", "color": "#ffed00"}},
+    {"id": "t-1", "type": "teacher", "attributes": {"title": "Mme", "firstName": "ANNE", "lastName": "DURAND"}},
+    {"id": "t-3", "type": "teacher", "attributes": {"title": "M.", "firstName": "PAUL", "lastName": "ROUX"}}
+  ]
+}

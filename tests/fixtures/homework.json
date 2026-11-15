@@ -1,0 +1,16 @@
+{
+  "data": [
+    {"id": "hw-2", "type": "homework",
+     "attributes": {"done": false, "title": "Exercices", "html": "<html><body><p>Finir l'exercice&nbsp;3</p><ul><li>page 12</li></ul></body></html>", "dueDateTime": "2026-11-17T08:05:00Z"},
+     "relationships": {"subject": {"data": {"id": "sub-es", "type": "subject"}}, "teacher": {"data": {"id": "t-2", "type": "teacher"}}}},
+    {"id": "hw-1", "type": "homework",
+     "attributes": {"done": true, "title": "p 41 n°5", "html": "<html>\n <head></head>\n <body>    \n </body>\n</html>", "dueDateTime": "2026-11-16T08:05:00Z"},
+     "relationships": {"subject": {"data": {"id": "sub-ma", "type": "subject"}}, "teacher": {"data": {"id": "t-1", "type": "teacher"}}}}
+  ],
+  "included": [
+    {"id": "sub-ma", "type": "subject", "attributes": {"label": "MATHEMATIQUES", "color": "#185abc"}},
+    {"id": "sub-es", "type": "subject", "attributes": {"label": "ESPAGNOL LV2", "color": "#d4534c"}},
+    {"id": "t-1", "type": "teacher", "attributes": {"title": "Mme", "firstName": "ANNE", "lastName": "DURAND"}},
+    {"id": "t-2", "type": "teacher", "attributes": {"title": "M.", "firstName": "LUC", "lastName": "PETIT"}}
+  ]
+}

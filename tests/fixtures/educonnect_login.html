@@ -1,0 +1,15 @@
+<html><head><title>Sélection du profil - ÉduConnect</title></head>
+<body>
+<button onclick="selectionProfil('responsable')" id="bouton_responsable">Responsable d'élève</button>
+<form id="validerAuth" action="/idp/profile/SAML2/POST/SSO?execution=e1s2" method="post">
+    <input type="hidden" name="csrf_token" value="csrf-login" />
+    <input class="fr-input" type="text" id="username" name="j_username" required/>
+    <input class="fr-input" type="password" id="password" name="j_password" required/>
+    <button type="button" class="showPwd">Afficher</button>
+    <button id="bouton_valider" type="submit" name="_eventId_proceed" disabled>Se connecter</button>
+</form>
+<form action="/idp/profile/SAML2/POST/SSO?execution=e1s2" method="post">
+    <input type="hidden" name="csrf_token" value="csrf-login" />
+    <button id="lienConnexionFC" type="submit" name="_eventId_FranceConnect">FranceConnect</button>
+</form>
+</body></html>

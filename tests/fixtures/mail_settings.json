@@ -1,0 +1,8 @@
+{
+  "data": {"id": "RSKO-P-parent-1", "type": "userMailSetting", "attributes": {"maxCharsInCommunicationSubject": 255},
+           "relationships": {"folders": {"data": [{"id": "f-sent", "type": "folder"}, {"id": "f-inbox", "type": "folder"}]}}},
+  "included": [
+    {"id": "f-sent", "type": "folder", "attributes": {"name": "Envoyés", "position": 2, "type": "SENT"}},
+    {"id": "f-inbox", "type": "folder", "attributes": {"name": "Reçus", "position": 1, "type": "INBOX"}}
+  ]
+}

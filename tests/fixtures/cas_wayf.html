@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr"><head><title>ENT - Authentification</title></head>
+<body>
+<h1>S&#39;authentifier en tant que</h1>
+<form action="/login" method="get" class="cas__wayf-form">
+  <fieldset class="form__fieldset">
+    <legend><button type="button" class="js-wayftoggle">
+      Élève ou parent</button></legend>
+    <ul>
+      <li><input type="radio" name="selection" id="idp-EAST-EDU_parent_eleve" value="EAST-EDU_parent_eleve"/><label for="idp-EAST-EDU_parent_eleve">de l’académie de l'Est</label></li>
+      <li><input type="radio" name="selection" id="idp-WEST-EDU_parent_eleve" value="WEST-EDU_parent_eleve"/><label for="idp-WEST-EDU_parent_eleve">de l’académie de l'Ouest</label></li>
+    </ul>
+  </fieldset>
+  <hr/>
+  <fieldset class="form__fieldset">
+    <legend><button type="button">Enseignant</button></legend>
+    <ul><li><input type="radio" name="selection" id="idp-WEST-AAA_enseignant" value="WEST-AAA_enseignant"/><label for="idp-WEST-AAA_enseignant">de l’académie de l'Ouest</label></li></ul>
+  </fieldset>
+  <ul><li><input type="radio" name="selection" id="idp-ENT" value="ENT"/><label for="idp-ENT">Autres comptes et invités</label></li></ul>
+  <input type="hidden" name="service" value="https://sso.example.test/login/KDE"/>
+  <input type="submit" name="submit" id="button-submit" value="Confirm"/>
+</form>
+</body></html>

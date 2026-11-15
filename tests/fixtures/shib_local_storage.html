@@ -1,0 +1,12 @@
+<html><head><title>Loading Session Information</title></head>
+<body onload="doLoad()">
+<form name="form1" action="/idp/profile/SAML2/POST/SSO?execution=e1s1" method="post">
+    <input type="hidden" name="csrf_token" value="csrf-ls" />
+    <input name="shib_idp_ls_exception.shib_idp_session_ss" type="hidden" />
+    <input name="shib_idp_ls_success.shib_idp_session_ss" type="hidden" value="false" />
+    <input name="shib_idp_ls_value.shib_idp_session_ss" type="hidden" />
+    <input name="shib_idp_ls_supported" type="hidden" />
+    <input name="_eventId_proceed" type="hidden" />
+    <noscript><input type="submit" value="Continue" /></noscript>
+</form>
+</body></html>

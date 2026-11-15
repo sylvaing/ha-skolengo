@@ -1,0 +1,29 @@
+{
+  "data": {
+    "id": "RSKO-P-parent-1",
+    "type": "legalRepresentativeUserInfo",
+    "attributes": {
+      "firstName": "Alex",
+      "lastName": "MARTIN",
+      "permissions": [
+        {"schoolId": "SKO-E-college", "service": "TAF", "permittedOperations": ["READ_HOMEWORK_ASSIGNMENTS"]},
+        {"schoolId": "SKO-E-college", "service": "CDT", "permittedOperations": ["READ_LESSONS"]},
+        {"schoolId": "SKO-E-college", "service": "MSG", "permittedOperations": ["READ_MESSAGES", "WRITE_MESSAGES"]},
+        {"schoolId": "SKO-E-lycee", "service": "EVAL", "permittedOperations": ["READ_EVALUATIONS"]}
+      ]
+    },
+    "relationships": {
+      "students": {"data": [{"id": "ESKO-P-child-1", "type": "student"}, {"id": "ESKO-P-child-2", "type": "student"}]}
+    }
+  },
+  "included": [
+    {"id": "ESKO-P-child-1", "type": "student",
+     "attributes": {"firstName": "Lou", "lastName": "MARTIN", "className": "4A"},
+     "relationships": {"school": {"data": {"id": "SKO-E-college", "type": "school"}}}},
+    {"id": "ESKO-P-child-2", "type": "student",
+     "attributes": {"firstName": "Sam", "lastName": "MARTIN", "className": "2B"},
+     "relationships": {"school": {"data": {"id": "SKO-E-lycee", "type": "school"}}}},
+    {"id": "SKO-E-college", "type": "school", "attributes": {"name": "Collège Exemple", "city": "VILLE", "timeZone": "Europe/Paris"}},
+    {"id": "SKO-E-lycee", "type": "school", "attributes": {"name": "Lycée Exemple", "city": "AUTRE", "timeZone": "Europe/Paris"}}
+  ]
+}
