@@ -1,0 +1,12 @@
+{
+  "domain": "skolengo",
+  "name": "Skolengo (ENT)",
+  "codeowners": ["@sylvaing"],
+  "config_flow": true,
+  "documentation": "https://github.com/sylvaing/ha-skolengo",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/sylvaing/ha-skolengo/issues",
+  "requirements": [],
+  "version": "0.0.0"
+}

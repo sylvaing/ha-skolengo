@@ -1,0 +1,16 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Établissement Skolengo",
+        "description": "Tapez le nom ou la ville de l'établissement pour le trouver.",
+        "data": {
+          "school": "Établissement"
+        }
+      }
+    },
+    "abort": {
+      "not_implemented": "Cette intégration est encore en développement et ne peut pas encore être configurée."
+    }
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Skolengo school",
+        "description": "Type the name or the town of the school to find it.",
+        "data": {
+          "school": "School"
+        }
+      }
+    },
+    "abort": {
+      "not_implemented": "This integration is still in development and cannot be set up yet."
+    }
+  }
+}
