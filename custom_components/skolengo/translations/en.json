@@ -2,15 +2,80 @@
   "config": {
     "step": {
       "user": {
-        "title": "Skolengo school",
-        "description": "Type the name or the town of the school to find it.",
+        "title": "Find your school",
+        "description": "Type the name or the town of the school (Skolengo ENT).",
+        "data": {
+          "query": "School name or town"
+        }
+      },
+      "school": {
+        "title": "Choose your school",
         "data": {
           "school": "School"
         }
+      },
+      "provider": {
+        "title": "How do you sign in?",
+        "description": "Choose the account you use on the ENT of {school}. Parents and students usually sign in with EduConnect of their académie.",
+        "data": {
+          "provider_id": "Account type"
+        }
+      },
+      "method": {
+        "title": "Sign-in method",
+        "description": "The integration can sign in for you with your login and password, without a browser. Use the browser method if you sign in with FranceConnect or if a captcha is asked.",
+        "menu_options": {
+          "credentials": "Login and password (recommended)",
+          "browser": "Sign in in my browser"
+        }
+      },
+      "credentials": {
+        "title": "Sign in",
+        "description": "Your EduConnect (or ENT) login and password for {school}. The password is used once to sign in and is not stored; only the session is kept.",
+        "data": {
+          "username": "Username",
+          "password": "Password"
+        }
+      },
+      "browser": {
+        "title": "Sign in in your browser",
+        "description": "1. On a computer, open the developer tools of your browser (F12) on the **Console** tab.\n2. Open [this sign-in link]({auth_url}) in the same tab and sign in as usual.\n3. At the end the browser cannot open an address starting with `skoapp-prod://sign-in-callback`: copy that whole address from the console (Chrome: *Failed to launch 'skoapp-prod://…'*) and paste it below **within a minute**.",
+        "data": {
+          "callback_url": "Address starting with skoapp-prod://"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Sign in again",
+        "description": "The Skolengo session for {school} has expired or was revoked. Sign in again to keep your data up to date."
       }
     },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "no_school_found": "No school found. Try the town or another spelling.",
+      "invalid_auth": "Invalid authentication",
+      "captcha_required": "EduConnect asks for a captcha. Sign in once on the ENT website in a browser, then try again, or use the browser method.",
+      "unknown_provider": "This account type is no longer offered by the ENT. Start again.",
+      "login_failed": "The sign-in stopped on an unexpected page (maintenance?). Try again later or use the browser method.",
+      "code_expired": "The pasted address has expired or was already used. Use the new link and paste the address faster.",
+      "invalid_callback": "This is not a valid address starting with skoapp-prod://sign-in-callback."
+    },
     "abort": {
-      "not_implemented": "This integration is still in development and cannot be set up yet."
+      "already_configured": "Account is already configured",
+      "reauth_successful": "Re-authentication was successful",
+      "wrong_account": "You signed in with another account than the one of this entry.",
+      "cannot_connect": "Failed to connect"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Skolengo options",
+        "data": {
+          "scan_interval": "Update interval (minutes)",
+          "homework_days": "Homework: days ahead",
+          "timetable_days": "Timetable: days ahead"
+        }
+      }
     }
   }
 }

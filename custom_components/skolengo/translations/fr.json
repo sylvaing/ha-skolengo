@@ -2,15 +2,80 @@
   "config": {
     "step": {
       "user": {
-        "title": "Établissement Skolengo",
-        "description": "Tapez le nom ou la ville de l'établissement pour le trouver.",
+        "title": "Trouver l'établissement",
+        "description": "Tapez le nom ou la ville de l'établissement (ENT Skolengo).",
+        "data": {
+          "query": "Nom ou ville de l'établissement"
+        }
+      },
+      "school": {
+        "title": "Choisir l'établissement",
         "data": {
           "school": "Établissement"
         }
+      },
+      "provider": {
+        "title": "Comment vous connectez-vous ?",
+        "description": "Choisissez le compte que vous utilisez sur l'ENT de {school}. Les parents et les élèves se connectent en général avec ÉduConnect de leur académie.",
+        "data": {
+          "provider_id": "Type de compte"
+        }
+      },
+      "method": {
+        "title": "Méthode de connexion",
+        "description": "L'intégration peut se connecter pour vous avec votre identifiant et votre mot de passe, sans navigateur. Utilisez la méthode navigateur si vous vous connectez avec FranceConnect ou si un captcha est demandé.",
+        "menu_options": {
+          "credentials": "Identifiant et mot de passe (recommandé)",
+          "browser": "Me connecter dans mon navigateur"
+        }
+      },
+      "credentials": {
+        "title": "Connexion",
+        "description": "Votre identifiant et votre mot de passe ÉduConnect (ou ENT) pour {school}. Le mot de passe sert une seule fois à la connexion et n'est pas conservé ; seule la session l'est.",
+        "data": {
+          "username": "Identifiant",
+          "password": "Mot de passe"
+        }
+      },
+      "browser": {
+        "title": "Connexion dans votre navigateur",
+        "description": "1. Sur un ordinateur, ouvrez les outils de développement du navigateur (F12), onglet **Console**.\n2. Ouvrez [ce lien de connexion]({auth_url}) dans ce même onglet et connectez-vous comme d'habitude.\n3. À la fin, le navigateur ne sait pas ouvrir une adresse qui commence par `skoapp-prod://sign-in-callback` : copiez cette adresse complète depuis la console (Chrome : *Failed to launch 'skoapp-prod://…'*) et collez-la ci-dessous **dans la minute**.",
+        "data": {
+          "callback_url": "Adresse commençant par skoapp-prod://"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Se reconnecter",
+        "description": "La session Skolengo de {school} a expiré ou a été révoquée. Reconnectez-vous pour que les données restent à jour."
       }
     },
+    "error": {
+      "cannot_connect": "Échec de connexion",
+      "no_school_found": "Aucun établissement trouvé. Essayez la ville ou une autre orthographe.",
+      "invalid_auth": "Identifiant ou mot de passe incorrect",
+      "captcha_required": "ÉduConnect demande un captcha. Connectez-vous une fois sur le site de l'ENT dans un navigateur, puis réessayez, ou utilisez la méthode navigateur.",
+      "unknown_provider": "Ce type de compte n'est plus proposé par l'ENT. Recommencez.",
+      "login_failed": "La connexion s'est arrêtée sur une page inattendue (maintenance ?). Réessayez plus tard ou utilisez la méthode navigateur.",
+      "code_expired": "L'adresse collée a expiré ou a déjà servi. Utilisez le nouveau lien et collez l'adresse plus vite.",
+      "invalid_callback": "Ce n'est pas une adresse valide commençant par skoapp-prod://sign-in-callback."
+    },
     "abort": {
-      "not_implemented": "Cette intégration est encore en développement et ne peut pas encore être configurée."
+      "already_configured": "Ce compte est déjà configuré",
+      "reauth_successful": "Reconnexion réussie",
+      "wrong_account": "Vous vous êtes connecté avec un autre compte que celui de cette entrée.",
+      "cannot_connect": "Échec de connexion"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Options Skolengo",
+        "data": {
+          "scan_interval": "Intervalle de mise à jour (minutes)",
+          "homework_days": "Devoirs : nombre de jours à venir",
+          "timetable_days": "Emploi du temps : nombre de jours à venir"
+        }
+      }
     }
   }
 }
