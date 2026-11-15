@@ -72,7 +72,7 @@ def api() -> Generator[MagicMock]:
             f"{FLOW}.async_exchange_code", AsyncMock(return_value=make_tokens("access-2", "refresh-2"))
         ) as code,
         patch(f"{FLOW}.SkolengoClient") as client_cls,
-        patch(f"{FLOW}._login_session", return_value=MagicMock(close=AsyncMock())) as login_session,
+        patch(f"{FLOW}._login_session", return_value=MagicMock()) as login_session,
         patch("custom_components.skolengo.async_setup_entry", AsyncMock(return_value=True)),
     ):
         client = client_cls.return_value
@@ -130,8 +130,8 @@ async def test_full_flow_with_credentials(hass: HomeAssistant, api: MagicMock) -
     assert "s3cret" not in repr(data)
     api.login.assert_awaited_once()
     assert api.login.await_args.args[1:] == (SCHOOL, "a.martin12", "s3cret", "WEST-EDU_parent_eleve")
-    # every sign-in session is closed
-    assert api.login_session.return_value.close.await_count == api.login_session.call_count
+    # every sign-in session is released
+    assert api.login_session.return_value.detach.call_count == api.login_session.call_count
 
 
 async def test_single_school_and_no_provider_page(hass: HomeAssistant, api: MagicMock) -> None:

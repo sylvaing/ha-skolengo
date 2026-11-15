@@ -189,7 +189,7 @@ class SkolengoConfigFlow(ConfigFlow, domain=DOMAIN):
             _LOGGER.debug("Cannot read the identity providers: %s", err)
             return self.async_abort(reason="cannot_connect")
         finally:
-            await session.close()
+            session.detach()
         if not self._providers:
             self._provider_id = None
             return await self.async_step_method()
@@ -245,7 +245,7 @@ class SkolengoConfigFlow(ConfigFlow, domain=DOMAIN):
             else:
                 return await self._async_signed_in(tokens)
             finally:
-                await session.close()
+                session.detach()
 
         return self.async_show_form(
             step_id="credentials",
@@ -381,5 +381,8 @@ class SkolengoOptionsFlow(OptionsFlowWithReload):
 
 
 def _login_session(hass: HomeAssistant) -> aiohttp.ClientSession:
-    """A session with its own cookie jar for one sign-in (closed by the caller)."""
+    """A session with its own cookie jar for one sign-in.
+
+    The caller must call ``detach()`` when done (Home Assistant sessions must not be ``close()``d).
+    """
     return async_create_clientsession(hass, auto_cleanup=False, cookie_jar=aiohttp.CookieJar())
