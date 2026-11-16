@@ -10,11 +10,12 @@ régions (par exemple *Mon ENT Occitanie*). Elle utilise la même API que l'appl
 
 ## État
 
-🚧 **En développement, pas encore utilisable.** L'avancement est suivi dans les
-[tickets](https://github.com/sylvaing/ha-skolengo/issues) et les
-[jalons](https://github.com/sylvaing/ha-skolengo/milestones).
+**v0.1.0, première version.** Testée avec un compte parent de *Mon ENT Occitanie*. Les autres ENT
+Skolengo devraient fonctionner mais n'ont pas été testés : les retours sont bienvenus dans les
+[tickets](https://github.com/sylvaing/ha-skolengo/issues). Les changements sont listés dans le
+[journal des modifications](CHANGELOG.md).
 
-## Fonctions prévues (v0.1.0)
+## Fonctions
 
 Pour chaque élève, seulement pour les services ouverts par son établissement :
 
@@ -100,8 +101,16 @@ ent_url: https://votre-ent.example   # lien « Ouvrir l'ENT », facultatif
 
 ## Installation
 
-Pas encore disponible. À la sortie de la v0.1.0, elle s'installera par [HACS](https://hacs.xyz) comme
-dépôt personnalisé.
+Par [HACS](https://hacs.xyz) :
+
+1. HACS → ⋮ → **Dépôts personnalisés** → ajoutez `https://github.com/sylvaing/ha-skolengo`, type
+   **Intégration**.
+2. Installez **Skolengo (ENT)**, puis redémarrez Home Assistant.
+3. **Paramètres → Appareils et services → Ajouter une intégration → Skolengo (ENT)** : cherchez
+   l'établissement, choisissez votre mode de connexion, puis saisissez votre identifiant et votre mot de
+   passe EduConnect.
+
+Les cartes sont disponibles tout de suite (actualisez une fois le navigateur après le redémarrage).
 
 ## Confidentialité
 

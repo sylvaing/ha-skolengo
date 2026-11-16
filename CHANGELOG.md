@@ -1,0 +1,19 @@
+# Changelog
+
+## 0.1.0 — unreleased
+
+First release.
+
+- **Sign-in**: find the school, choose the identity provider, then type the EduConnect login and
+  password; the integration signs in itself, without a browser. The password is not stored, only the
+  session (refreshed and persisted automatically). Browser fallback (paste the `skoapp-prod://` address)
+  for FranceConnect or a captcha. Reauthentication when the session dies.
+- **Updates**: every 30 minutes by default (option), at most every 3 hours at night; only the services
+  each school grants are read; one failing service keeps its last data and never hides the others.
+- **Homework**: sensor and to-do list per student; ticking an item marks the homework done in the ENT.
+- **Timetable**: lessons-of-the-day sensor, next-lesson sensor and calendar per student; cancelled
+  lessons marked.
+- **Messages**: unread sensor with the latest conversations, and the `skolengo_new_message` event.
+- **Cards** shipped and registered by the integration: `skolengo-homework-card`,
+  `skolengo-timetable-card`, `skolengo-messages-card` (visual editors, French and English).
+- **Diagnostics** without personal data; own icon and logo.
