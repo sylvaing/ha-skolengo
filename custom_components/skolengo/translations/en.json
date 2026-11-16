@@ -77,5 +77,32 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "homework": {
+        "name": "Homework",
+        "unit_of_measurement": "to do"
+      }
+    },
+    "todo": {
+      "homework": {
+        "name": "Homework"
+      }
+    }
+  },
+  "exceptions": {
+    "homework_not_found": {
+      "message": "Homework {uid} is not in the list any more; refresh and try again."
+    },
+    "homework_forbidden": {
+      "message": "The ENT does not allow this account to mark homework as done."
+    },
+    "homework_update_failed": {
+      "message": "The ENT refused the change: {error}"
+    },
+    "auth_expired": {
+      "message": "The Skolengo session has expired; sign in again."
+    }
   }
 }

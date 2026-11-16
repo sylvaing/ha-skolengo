@@ -10,6 +10,7 @@ import logging
 from dataclasses import dataclass
 
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -22,7 +23,7 @@ from .entity import account_device_info, student_device_info
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS: list[str] = []
+PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.TODO]
 
 
 @dataclass(slots=True)
