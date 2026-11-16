@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 from datetime import UTC, date, datetime
 
+import aiohttp
 import pytest
 from pytest_homeassistant_custom_component.test_util.aiohttp import (
     AiohttpClientMocker,
@@ -15,6 +16,7 @@ from custom_components.skolengo.api import (
     SkolengoApiError,
     SkolengoAuthError,
     SkolengoClient,
+    SkolengoConnectionError,
     SkolengoForbiddenError,
     Tokens,
 )
@@ -252,3 +254,17 @@ def test_html_to_text() -> None:
     assert html_to_text("<p>Un&nbsp;<b>deux</b></p><p></p><p>trois<br/>quatre</p><script>x()</script>") == (
         "Un deux\n\ntrois\nquatre"
     )
+
+
+async def test_connection_error_and_non_json_error(aioclient_mock: AiohttpClientMocker) -> None:
+    """Network failures and error pages without JSON are mapped to the client's exceptions."""
+    aioclient_mock.get(f"{API}/homework-assignments", exc=aiohttp.ClientConnectionError("boom"))
+    aioclient_mock.get(f"{API}/agendas", status=502, text="<html>Bad gateway</html>")
+    session, client = make_client(aioclient_mock)
+
+    with pytest.raises(SkolengoConnectionError):
+        await client.async_get_homework("s", "SKO-E-lycee", START, END)
+    with pytest.raises(SkolengoApiError) as err:
+        await client.async_get_lessons("s", "SKO-E-lycee", START, END)
+    assert (err.value.status, err.value.code) == (502, None)
+    await session.close()

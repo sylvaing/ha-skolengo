@@ -14,7 +14,7 @@ from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClien
 from custom_components.skolengo.const import DOMAIN
 
 from .common import calls, make_entry, mock_api
-from .helpers import API
+from .helpers import API, TOKEN
 
 SENSOR = "sensor.lou_martin_homework"
 TODO = "todo.lou_martin_homework"
@@ -131,3 +131,24 @@ async def test_unknown_item(hass: HomeAssistant, aioclient_mock: AiohttpClientMo
             {"entity_id": TODO, "item": "nope", "status": "completed"},
             blocking=True,
         )
+
+
+async def test_mark_done_with_dead_session_starts_reauth(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    """A session refused while ticking starts the reauth flow."""
+    entry = await _setup(hass, aioclient_mock)
+    aioclient_mock.patch(PATCH_URL, status=401)
+    aioclient_mock.post(TOKEN, status=400, json={"error": "invalid_grant"})
+    with pytest.raises(HomeAssistantError) as err:
+        await hass.services.async_call(
+            TODO_DOMAIN,
+            "update_item",
+            {"entity_id": TODO, "item": "hw-2", "status": "completed"},
+            blocking=True,
+        )
+    assert err.value.translation_key == "auth_expired"
+    await hass.async_block_till_done()
+    assert any(
+        flow["context"]["source"] == "reauth" for flow in entry.async_get_active_flows(hass, {"reauth"})
+    )
