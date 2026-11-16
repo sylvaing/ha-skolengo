@@ -35,3 +35,6 @@ SERVICE_LESSONS: Final = "CDT"
 SERVICE_MESSAGES: Final = "MSG"
 SERVICE_EVALUATIONS: Final = "EVAL"
 SERVICE_ABSENCES: Final = "ABS"
+
+# Operations of a permission (``permittedOperations``).
+OP_MARK_HOMEWORK_DONE: Final = "MARK_HOMEWORK_ASSIGNMENT_AS_DONE"

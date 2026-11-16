@@ -170,6 +170,13 @@ class Account:
         """Whether the account may use `service` in the given school."""
         return any(p.school_id == school_id and p.service == service for p in self.permissions)
 
+    def can(self, school_id: str, service: str, operation: str) -> bool:
+        """Whether the account may perform ``operation`` of ``service`` in the given school."""
+        return any(
+            p.school_id == school_id and p.service == service and operation in p.operations
+            for p in self.permissions
+        )
+
     def schools_with_service(self, service: str) -> list[str]:
         """Ids of the schools that grant `service`."""
         return [p.school_id for p in self.permissions if p.service == service]

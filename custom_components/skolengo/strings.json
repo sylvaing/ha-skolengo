@@ -119,6 +119,9 @@
     },
     "auth_expired": {
       "message": "The Skolengo session has expired; sign in again."
+    },
+    "homework_read_only": {
+      "message": "This account may only read the homework: the ENT lets only the student mark it as done."
     }
   }
 }
