@@ -170,6 +170,10 @@ async def test_messaging(aioclient_mock: AiohttpClientMocker) -> None:
     assert first.preview == "Bonjour,\ndépart à 8h"
     assert first.last_date == datetime(2026, 11, 11, 20, 11, 51, tzinfo=UTC)
     assert second.sender is None and second.preview is None
+    # The participations only carry their content when the sparse fieldsets ask for it.
+    query = aioclient_mock.mock_calls[-1][1].query
+    assert "contentWithoutHtml" in query["fields[participation]"]
+    assert "lastParticipation" in query["fields[communication]"]
     await session.close()
 
 

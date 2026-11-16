@@ -253,7 +253,11 @@ GET  /contacts , /contacts-folders                # address book
 `users-mail-settings` returns the folders (each with `name`, `position` and `type`: `INBOX`,
 `SENT`, `TRASH`, `PERSONAL`). A communication has `subject`, `read`, `participationsNumber`,
 `recipientsSummary` (HTML) and a `lastParticipation` (`dateTime`, `contentWithoutHtml`,
-`sender`); `meta.totalResourceCount` gives the folder size. Count `read: false` in the inbox
+`sender`); `meta.totalResourceCount` gives the folder size. The participations' `content` and
+`contentWithoutHtml` come back `null` unless the list asks for them with sparse fieldsets:
+`fields[communication]=subject,read,participationsNumber,lastParticipation` and
+`fields[participation]=dateTime,contentWithoutHtml,content,sender` (verified: this does not change the
+`read` flags). Count `read: false` in the inbox
 folder for an "unread messages" indicator.
 
 ### Messaging — "La Bulle" (instant messaging, Matrix-based)

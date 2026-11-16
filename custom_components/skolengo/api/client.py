@@ -250,6 +250,9 @@ class SkolengoClient:
             {
                 "filter[folders.id]": folder_id,
                 "include": "lastParticipation,lastParticipation.sender,lastParticipation.sender.person",
+                # Without these sparse fieldsets the participations come without their content.
+                "fields[communication]": "subject,read,participationsNumber,lastParticipation",
+                "fields[participation]": "dateTime,contentWithoutHtml,content,sender",
                 "page[limit]": str(limit),
             },
             school_id=school_id,
