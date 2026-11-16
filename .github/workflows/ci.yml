@@ -40,6 +40,17 @@ jobs:
       - run: pip install pytest-homeassistant-custom-component
       - run: pytest -v
 
+  cards:
+    name: Cards (node --test)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - run: node --check custom_components/skolengo/frontend/skolengo-cards.js
+      - run: node --test tests/js/cards.test.mjs
+
   hassfest:
     name: hassfest
     runs-on: ubuntu-latest

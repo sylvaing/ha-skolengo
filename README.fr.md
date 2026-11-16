@@ -33,6 +33,65 @@ Les notes et les absences ne sont pas dans la v0.1.0 : dans les établissements 
 Skolengo ne fait que les relayer et l'API échoue souvent. L'[intégration Pronote](https://github.com/delphiki/hass-pronote)
 les couvre.
 
+## Entités
+
+| Entité | Par | État | Pour |
+| --- | --- | --- | --- |
+| `sensor.<élève>_homework` | élève (devoirs ouverts) | devoirs à faire | carte des devoirs |
+| `todo.<élève>_homework` | élève (devoirs ouverts) | devoirs à faire | cocher = fait dans l'ENT |
+| `sensor.<élève>_timetable` | élève (emploi du temps ouvert) | cours de la journée en cours | carte de l'emploi du temps |
+| `sensor.<élève>_next_lesson` | élève (emploi du temps ouvert) | début du prochain cours | automatisations |
+| `calendar.<élève>_timetable` | élève (emploi du temps ouvert) | cours actuel / suivant | calendrier |
+| `sensor.<compte>_unread_messages` | compte (messagerie ouverte) | conversations non lues | carte des messages |
+
+L'événement `skolengo_new_message` est émis pour chaque nouveau message non lu (`subject`, `sender`,
+`date`, `preview`), pour construire des notifications.
+
+## Cartes
+
+Les cartes sont livrées avec l'intégration et chargées automatiquement : aucune ressource à ajouter.
+Ajoutez-les depuis le sélecteur de cartes (cherchez « Skolengo ») ou en YAML. Leur apparence et leurs
+options reprennent les cartes Pronote de [lovelace-pronote](https://github.com/delphiki/lovelace-pronote)
+(code indépendant).
+
+```yaml
+type: custom:skolengo-homework-card
+entity: sensor.lou_martin_homework
+display_header: true
+current_week_only: false
+display_done_homework: true
+reduce_done_homework: true   # devoirs faits : matière seule
+enable_slider: false         # un jour à la fois, avec des flèches
+```
+
+Cliquez sur le rond d'un devoir pour le marquer fait ou à faire (via la liste de tâches de l'élève ;
+renseignez `todo_entity` si elle n'est pas trouvée automatiquement).
+
+```yaml
+type: custom:skolengo-timetable-card
+entity: sensor.lou_martin_timetable
+display_header: true
+display_lunch_break: true
+display_classroom: true
+display_teacher: true
+display_day_hours: true
+dim_ended_lessons: true
+display_free_time_slots: true
+max_days: 5
+current_week_only: false
+enable_slider: false
+switch_to_next_day: true     # une fois les cours du jour finis, commencer au jour de classe suivant
+```
+
+```yaml
+type: custom:skolengo-messages-card
+entity: sensor.alex_martin_unread_messages
+display_header: true
+max_messages: 5
+unread_only: false
+ent_url: https://votre-ent.example   # lien « Ouvrir l'ENT », facultatif
+```
+
 ## Documentation
 
 - [API mobile Skolengo — référence non officielle](docs/skolengo-api.md) (en anglais)
