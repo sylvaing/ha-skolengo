@@ -77,5 +77,32 @@
         }
       }
     }
+  },
+  "entity": {
+    "sensor": {
+      "homework": {
+        "name": "Devoirs",
+        "unit_of_measurement": "à faire"
+      }
+    },
+    "todo": {
+      "homework": {
+        "name": "Devoirs"
+      }
+    }
+  },
+  "exceptions": {
+    "homework_not_found": {
+      "message": "Le devoir {uid} n'est plus dans la liste ; actualisez puis réessayez."
+    },
+    "homework_forbidden": {
+      "message": "L'ENT n'autorise pas ce compte à marquer les devoirs comme faits."
+    },
+    "homework_update_failed": {
+      "message": "L'ENT a refusé la modification : {error}"
+    },
+    "auth_expired": {
+      "message": "La session Skolengo a expiré ; reconnectez-vous."
+    }
   }
 }
