@@ -2,13 +2,19 @@
 
 from __future__ import annotations
 
-from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
-from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from datetime import datetime
 
-from .api import Account, Student
+from homeassistant.core import CALLBACK_TYPE, callback
+from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
+from homeassistant.helpers.event import async_track_point_in_utc_time
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from homeassistant.util import dt as dt_util
+
+from .api import Account, Lesson, Student
 from .api.const import SERVICE_HOMEWORK
 from .const import DOMAIN
 from .coordinator import SkolengoCoordinator, StudentData
+from .timetable import next_change
 
 MANUFACTURER = "Kosmos (Skolengo)"
 
@@ -67,6 +73,48 @@ class SkolengoStudentEntity(CoordinatorEntity[SkolengoCoordinator]):
             return False
         value = data.homework if self._service == SERVICE_HOMEWORK else data.lessons
         return value is not None
+
+
+class SkolengoTimedEntity(SkolengoStudentEntity):
+    """A timetable entity whose state also changes when a lesson starts or ends."""
+
+    _unsub_timer: CALLBACK_TYPE | None = None
+
+    @property
+    def lessons(self) -> list[Lesson] | None:
+        """The lessons of the window."""
+        data = self.student_data
+        return data.lessons if data else None
+
+    async def async_added_to_hass(self) -> None:
+        """Also plan the next time-based change."""
+        await super().async_added_to_hass()
+        self._schedule()
+        self.async_on_remove(self._cancel_timer)
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        self._schedule()
+        super()._handle_coordinator_update()
+
+    @callback
+    def _cancel_timer(self) -> None:
+        if self._unsub_timer is not None:
+            self._unsub_timer()
+            self._unsub_timer = None
+
+    @callback
+    def _schedule(self) -> None:
+        self._cancel_timer()
+        when = next_change(self.lessons or [], dt_util.utcnow())
+        if when is not None:
+            self._unsub_timer = async_track_point_in_utc_time(self.hass, self._time_changed, when)
+
+    @callback
+    def _time_changed(self, _now: datetime) -> None:
+        self._unsub_timer = None
+        self._schedule()
+        self.async_write_ha_state()
 
 
 class SkolengoAccountEntity(CoordinatorEntity[SkolengoCoordinator]):

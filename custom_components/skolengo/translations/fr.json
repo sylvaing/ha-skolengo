@@ -83,11 +83,23 @@
       "homework": {
         "name": "Devoirs",
         "unit_of_measurement": "à faire"
+      },
+      "timetable": {
+        "name": "Emploi du temps",
+        "unit_of_measurement": "cours"
+      },
+      "next_lesson": {
+        "name": "Prochain cours"
       }
     },
     "todo": {
       "homework": {
         "name": "Devoirs"
+      }
+    },
+    "calendar": {
+      "timetable": {
+        "name": "Emploi du temps"
       }
     }
   },

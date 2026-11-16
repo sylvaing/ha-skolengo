@@ -83,11 +83,23 @@
       "homework": {
         "name": "Homework",
         "unit_of_measurement": "to do"
+      },
+      "timetable": {
+        "name": "Timetable",
+        "unit_of_measurement": "lessons"
+      },
+      "next_lesson": {
+        "name": "Next lesson"
       }
     },
     "todo": {
       "homework": {
         "name": "Homework"
+      }
+    },
+    "calendar": {
+      "timetable": {
+        "name": "Timetable"
       }
     }
   },
