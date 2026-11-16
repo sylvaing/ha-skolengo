@@ -12,10 +12,13 @@ from dataclasses import dataclass
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant, callback
+from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from homeassistant.helpers.typing import ConfigType
 
 from .api import AppConfig, SkolengoClient, SkolengoError, Tokens, async_get_app_config
+from .cards import async_register_cards
 from .config_flow import school_from_dict
 from .const import CONF_SCHOOL, CONF_TOKENS, DOMAIN
 from .coordinator import SkolengoCoordinator
@@ -24,6 +27,14 @@ from .entity import account_device_info, student_device_info
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS: list[Platform] = [Platform.CALENDAR, Platform.SENSOR, Platform.TODO]
+
+CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
+
+
+async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
+    """Ship the Lovelace cards once, whatever the number of entries."""
+    await async_register_cards(hass)
+    return True
 
 
 @dataclass(slots=True)
