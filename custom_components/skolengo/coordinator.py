@@ -60,6 +60,9 @@ TRANSIENT_CODES = {"PRONOTE_RESOURCES_NOT_READY"}
 
 INBOX_PAGE_SIZE = 20
 
+# Fired for each conversation that gets a new unread message (not at the first update).
+EVENT_NEW_MESSAGE = f"{DOMAIN}_new_message"
+
 
 @dataclass(slots=True)
 class StudentData:
@@ -192,6 +195,7 @@ class SkolengoCoordinator(DataUpdateCoordinator[SkolengoSnapshot]):
                 snapshot.mailbox = previous.mailbox if previous else None
                 mailbox = await self._mailbox(account, snapshot)
                 if mailbox is not None:
+                    self._fire_new_messages(snapshot.mailbox, mailbox)
                     snapshot.mailbox, succeeded = mailbox, succeeded + 1
         except SkolengoAuthError as err:
             raise ConfigEntryAuthFailed(str(err)) from err
@@ -242,6 +246,25 @@ class SkolengoCoordinator(DataUpdateCoordinator[SkolengoSnapshot]):
             return None
         self._log_recovery("mailbox")
         return MailboxData(school_id=school_id, folders=folders, inbox=page)
+
+    def _fire_new_messages(self, previous: MailboxData | None, current: MailboxData) -> None:
+        """One event per unread conversation that is new or has a new message since the last update."""
+        if previous is None:
+            return
+        seen = {(c.id, c.last_date) for c in previous.inbox.communications}
+        for conv in current.inbox.communications:
+            if not conv.read and (conv.id, conv.last_date) not in seen:
+                self.hass.bus.async_fire(
+                    EVENT_NEW_MESSAGE,
+                    {
+                        "config_entry_id": self.config_entry.entry_id,
+                        "id": conv.id,
+                        "subject": conv.subject,
+                        "sender": conv.sender,
+                        "date": conv.last_date.isoformat() if conv.last_date else None,
+                        "preview": conv.preview,
+                    },
+                )
 
     async def _call[T](self, fetch: Callable[[], Awaitable[T]]) -> T:
         """Call the API, retrying transient errors as the app config recommends."""
