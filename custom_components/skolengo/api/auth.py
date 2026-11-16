@@ -42,7 +42,7 @@ from .exceptions import (
     SkolengoUnknownProviderError,
 )
 from .html import Form, parse_page
-from .models import AuthorizationRequest, IdentityProvider, OidcConfig, School, Tokens
+from .models import AppConfig, AuthorizationRequest, IdentityProvider, OidcConfig, School, Tokens
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -76,6 +76,19 @@ async def async_search_schools(session: aiohttp.ClientSession, text: str, limit:
             )
         )
     return schools
+
+
+async def async_get_app_config(session: aiohttp.ClientSession) -> AppConfig:
+    """Retry hints published for the mobile app (public endpoint, no authentication)."""
+    data = await _get_json(session, f"{API_BASE_URL}/sko-app-configs/current")
+    attributes = (data.get("data") or {}).get("attributes") or {}
+    defaults = AppConfig()
+    try:
+        delay = float(attributes.get("apiCallRetryDelay", defaults.retry_delay * 1000)) / 1000
+        retries = int(attributes.get("apiCallMaxRetries", defaults.max_retries))
+    except TypeError, ValueError:
+        return defaults
+    return AppConfig(retry_delay=max(delay, 0.0), max_retries=max(retries, 0))
 
 
 async def async_discover(session: aiohttp.ClientSession, well_known_url: str) -> OidcConfig:

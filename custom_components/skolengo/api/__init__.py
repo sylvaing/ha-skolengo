@@ -3,6 +3,7 @@
 from .auth import (
     async_discover,
     async_exchange_code,
+    async_get_app_config,
     async_get_identity_providers,
     async_login,
     async_refresh_tokens,
@@ -24,6 +25,7 @@ from .exceptions import (
 )
 from .models import (
     Account,
+    AppConfig,
     AuthorizationRequest,
     Communication,
     CommunicationPage,
@@ -42,6 +44,7 @@ from .models import (
 
 __all__ = [
     "Account",
+    "AppConfig",
     "AuthorizationRequest",
     "Communication",
     "CommunicationPage",
@@ -68,6 +71,7 @@ __all__ = [
     "Tokens",
     "async_discover",
     "async_exchange_code",
+    "async_get_app_config",
     "async_get_identity_providers",
     "async_login",
     "async_refresh_tokens",
