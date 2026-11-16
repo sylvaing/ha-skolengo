@@ -49,7 +49,7 @@ jobs:
         with:
           node-version: "24"
       - run: node --check custom_components/skolengo/frontend/skolengo-cards.js
-      - run: node --test tests/js/
+      - run: node --test tests/js/cards.test.mjs
 
   hassfest:
     name: hassfest
