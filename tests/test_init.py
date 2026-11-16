@@ -242,3 +242,22 @@ async def test_scheduled_refresh(hass: HomeAssistant, aioclient_mock: AiohttpCli
     await hass.async_block_till_done()
 
     assert len(calls(aioclient_mock, "users-info")) == before + 1
+
+
+async def test_account_failure_keeps_previous_account(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    """Once loaded, an account read failure keeps the previous account and still updates services."""
+    mock_api(aioclient_mock)
+    entry = _entry(hass)
+    assert await hass.config_entries.async_setup(entry.entry_id)
+    coordinator = entry.runtime_data.coordinator
+
+    aioclient_mock.clear_requests()
+    mock_api(aioclient_mock, skip=("users-info",))
+    aioclient_mock.get(USERS_INFO, side_effect=status(503))
+    await coordinator.async_refresh()
+
+    assert coordinator.last_update_success
+    assert coordinator.data.account.id == "RSKO-P-parent-1"
+    assert calls(aioclient_mock, "homework-assignments")
