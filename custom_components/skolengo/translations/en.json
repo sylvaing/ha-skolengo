@@ -90,6 +90,10 @@
       },
       "next_lesson": {
         "name": "Next lesson"
+      },
+      "unread_messages": {
+        "name": "Unread messages",
+        "unit_of_measurement": "messages"
       }
     },
     "todo": {

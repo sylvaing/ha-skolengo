@@ -12,7 +12,7 @@ from homeassistant.util import dt as dt_util
 
 from . import SkolengoConfigEntry
 from .api.const import SERVICE_HOMEWORK, SERVICE_LESSONS
-from .entity import SkolengoStudentEntity, SkolengoTimedEntity
+from .entity import SkolengoAccountEntity, SkolengoStudentEntity, SkolengoTimedEntity
 from .homework import homework_attributes
 from .timetable import current_day, lesson_attributes, lesson_subject, next_lesson
 
@@ -31,6 +31,8 @@ async def async_setup_entry(
         if SERVICE_LESSONS in data.services:
             entities.append(SkolengoTimetableSensor(coordinator, data.student))
             entities.append(SkolengoNextLessonSensor(coordinator, data.student))
+    if coordinator.data.has_messages:
+        entities.append(SkolengoUnreadMessagesSensor(coordinator))
     async_add_entities(entities)
 
 
@@ -120,4 +122,42 @@ class SkolengoNextLessonSensor(SkolengoTimedEntity, SensorEntity):
             "classroom": lesson.location,
             "teacher_name": ", ".join(lesson.teachers) or None,
             "end_at": dt_util.as_local(lesson.end).isoformat(),
+        }
+
+
+class SkolengoUnreadMessagesSensor(SkolengoAccountEntity, SensorEntity):
+    """Unread conversations among the latest ones of the inbox, with them for the card."""
+
+    _attr_state_class = SensorStateClass.MEASUREMENT
+
+    def __init__(self, coordinator) -> None:
+        """Inbox of the account."""
+        super().__init__(coordinator, "unread_messages")
+
+    @property
+    def native_value(self) -> int | None:
+        """Unread conversations."""
+        mailbox = self.coordinator.data.mailbox
+        return mailbox.unread if mailbox else None
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """The latest conversations, most recent first, for the messages card."""
+        data = self.coordinator.data
+        mailbox = data.mailbox
+        return {
+            "total": mailbox.inbox.total if mailbox else None,
+            "messages": [
+                {
+                    "id": c.id,
+                    "subject": c.subject,
+                    "sender": c.sender,
+                    "date": dt_util.as_local(c.last_date).isoformat() if c.last_date else None,
+                    "read": c.read,
+                    "participations": c.participations,
+                    "preview": c.preview,
+                }
+                for c in (mailbox.inbox.communications if mailbox else [])
+            ],
+            "last_error": data.mailbox_error,
         }

@@ -90,6 +90,10 @@
       },
       "next_lesson": {
         "name": "Prochain cours"
+      },
+      "unread_messages": {
+        "name": "Messages non lus",
+        "unit_of_measurement": "messages"
       }
     },
     "todo": {

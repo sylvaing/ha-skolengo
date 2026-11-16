@@ -129,3 +129,8 @@ class SkolengoAccountEntity(CoordinatorEntity[SkolengoCoordinator]):
         self._attr_unique_id = f"{account.id}_{key}"
         self._attr_translation_key = key
         self._attr_device_info = account_device_info(account)
+
+    @property
+    def available(self) -> bool:
+        """Available once the inbox has been read, even if its last update failed."""
+        return self.coordinator.data is not None and self.coordinator.data.mailbox is not None
