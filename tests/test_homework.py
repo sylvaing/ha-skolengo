@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 
 import pytest
@@ -13,16 +14,27 @@ from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClien
 
 from custom_components.skolengo.const import DOMAIN
 
-from .common import calls, make_entry, mock_api
-from .helpers import API, TOKEN
+from .common import USERS_INFO, calls, make_entry, mock_api
+from .helpers import API, TOKEN, fixture_json
 
 SENSOR = "sensor.lou_martin_homework"
 TODO = "todo.lou_martin_homework"
 PATCH_URL = f"{API}/homework-assignments/hw-2"
 
 
-async def _setup(hass: HomeAssistant, aioclient_mock: AiohttpClientMocker):
-    mock_api(aioclient_mock)
+def _users_info(writable: bool) -> dict:
+    """The parent account, optionally allowed to mark homework as done (like a student account)."""
+    data = copy.deepcopy(fixture_json("users_info_parent.json"))
+    if writable:
+        for perm in data["data"]["attributes"]["permissions"]:
+            if perm["service"] == "TAF":
+                perm["permittedOperations"].append("MARK_HOMEWORK_ASSIGNMENT_AS_DONE")
+    return data
+
+
+async def _setup(hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, writable: bool = True):
+    mock_api(aioclient_mock, skip=("users-info",))
+    aioclient_mock.get(USERS_INFO, json=_users_info(writable))
     entry = make_entry(hass)
     assert await hass.config_entries.async_setup(entry.entry_id)
     await hass.async_block_till_done()
@@ -152,3 +164,18 @@ async def test_mark_done_with_dead_session_starts_reauth(
     assert any(
         flow["context"]["source"] == "reauth" for flow in entry.async_get_active_flows(hass, {"reauth"})
     )
+
+
+async def test_read_only_for_a_parent(hass: HomeAssistant, aioclient_mock: AiohttpClientMocker) -> None:
+    """Without MARK_HOMEWORK_ASSIGNMENT_AS_DONE the list is read-only and the ENT is never called."""
+    await _setup(hass, aioclient_mock, writable=False)
+    assert hass.states.get(TODO).attributes["supported_features"] == 0
+    assert hass.states.get(SENSOR).attributes["can_mark_done"] is False
+    with pytest.raises(HomeAssistantError):
+        await hass.services.async_call(
+            TODO_DOMAIN,
+            "update_item",
+            {"entity_id": TODO, "item": "hw-2", "status": "completed"},
+            blocking=True,
+        )
+    assert not [c for c in aioclient_mock.mock_calls if c[0] == "PATCH"]

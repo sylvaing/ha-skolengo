@@ -234,6 +234,7 @@ class SkolengoHomeworkCard extends SkolengoBaseCard {
   static style = `
     .check { flex: none; align-self: center; cursor: pointer; color: var(--secondary-text-color); }
     .check.done { color: var(--success-color, #4caf50); }
+    .check.readonly { cursor: default; }
     .row.done .title { color: var(--secondary-text-color); }
   `;
 
@@ -279,14 +280,16 @@ class SkolengoHomeworkCard extends SkolengoBaseCard {
     let html = this._header(title, "", nav);
     html += `<div class="content">`;
     if (!shown.length) html += `<div class="empty">${esc(t(this._hass, "no_homework"))}</div>`;
+    // Parent accounts may only read the homework: the status icon is then not clickable.
+    const editable = state.attributes.can_mark_done !== false;
     for (const [date, list] of shown) {
       html += `<div class="day">${esc(dayLabel(this._hass, date))}</div>`;
-      for (const h of list) html += this._row(h);
+      for (const h of list) html += this._row(h, editable);
     }
     return `${html}</div>`;
   }
 
-  _row(h) {
+  _row(h, editable = true) {
     const c = this._config;
     const reduced = h.done && c.reduce_done_homework;
     const icon = h.done ? "mdi:check-circle" : "mdi:checkbox-blank-circle-outline";
@@ -299,8 +302,8 @@ class SkolengoHomeworkCard extends SkolengoBaseCard {
         ${reduced ? "" : `<div class="text">${esc(text)}</div>`}
         ${!reduced && h.teacher ? `<div class="meta">${esc(h.teacher)}</div>` : ""}
       </div>
-      <ha-icon class="check ${h.done ? "done" : ""}" icon="${icon}" title="${esc(label)}"
-        data-id="${esc(h.id)}" data-done="${h.done ? 1 : 0}"></ha-icon>
+      <ha-icon class="check ${h.done ? "done" : ""} ${editable ? "" : "readonly"}" icon="${icon}"
+        title="${esc(label)}" ${editable ? `data-id="${esc(h.id)}" data-done="${h.done ? 1 : 0}"` : ""}></ha-icon>
     </div>`;
   }
 

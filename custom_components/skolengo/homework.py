@@ -7,6 +7,7 @@ from typing import Any
 from homeassistant.util import dt as dt_util
 
 from .api import Homework
+from .api.const import OP_MARK_HOMEWORK_DONE, SERVICE_HOMEWORK
 
 
 def homework_summary(hw: Homework) -> str:
@@ -30,3 +31,9 @@ def homework_attributes(hw: Homework) -> dict[str, Any]:
         "done": hw.done,
         "background_color": hw.subject.color if hw.subject else None,
     }
+
+
+def can_mark_homework(coordinator, school_id: str | None) -> bool:
+    """Whether the account may mark the homework of this school as done (parents usually may not)."""
+    data = coordinator.data
+    return bool(school_id and data and data.account.can(school_id, SERVICE_HOMEWORK, OP_MARK_HOMEWORK_DONE))

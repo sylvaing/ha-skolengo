@@ -13,7 +13,7 @@ from homeassistant.util import dt as dt_util
 from . import SkolengoConfigEntry
 from .api.const import SERVICE_HOMEWORK, SERVICE_LESSONS
 from .entity import SkolengoAccountEntity, SkolengoStudentEntity, SkolengoTimedEntity
-from .homework import homework_attributes
+from .homework import can_mark_homework, homework_attributes
 from .timetable import current_day, lesson_attributes, lesson_subject, next_lesson
 
 PARALLEL_UPDATES = 0
@@ -61,6 +61,9 @@ class SkolengoHomeworkSensor(SkolengoStudentEntity, SensorEntity):
         return {
             "student": data.student.full_name if data else None,
             "homework": [homework_attributes(hw) for hw in homework],
+            "can_mark_done": can_mark_homework(
+                self.coordinator, data.student.school.id if data and data.student.school else None
+            ),
             "last_error": data.errors.get(SERVICE_HOMEWORK) if data else None,
         }
 

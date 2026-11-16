@@ -315,6 +315,10 @@ READ_PUNISHMENTS, READ_PUNISHMENTS_DETAILS, READ_OBSERVATIONS, READ_OBSERVATIONS
 READ_CATERING_SERVICES, FILE_READ_WRITE
 ```
 
+Verified on a parent account: `TAF` only grants `READ_HOMEWORK_ASSIGNMENTS`, and the homework
+`PATCH` (mark as done) answers `403`. Marking homework as done is a student feature
+(`MARK_HOMEWORK_ASSIGNMENT_AS_DONE`).
+
 Not every ENT/school enables every feature (e.g. a lycée may not use the Skolengo *cahier de
 textes* even if the collège in the same account does).
 

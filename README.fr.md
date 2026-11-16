@@ -65,7 +65,9 @@ enable_slider: false         # un jour à la fois, avec des flèches
 ```
 
 Cliquez sur le rond d'un devoir pour le marquer fait ou à faire (via la liste de tâches de l'élève ;
-renseignez `todo_entity` si elle n'est pas trouvée automatiquement).
+renseignez `todo_entity` si elle n'est pas trouvée automatiquement). Seul un compte **élève** le peut :
+l'ENT ne permet à un compte parent que de lire les devoirs, la liste et la carte sont alors en lecture
+seule.
 
 ```yaml
 type: custom:skolengo-timetable-card

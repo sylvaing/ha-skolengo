@@ -62,7 +62,8 @@ enable_slider: false         # one day at a time, with arrows
 ```
 
 Click the circle of a homework to mark it done or not done (through the student's to-do list; set
-`todo_entity` if it is not found automatically).
+`todo_entity` if it is not found automatically). Only a **student** account may do this: the ENT lets a
+parent account read the homework only, so the list and the card are then read-only.
 
 ```yaml
 type: custom:skolengo-timetable-card

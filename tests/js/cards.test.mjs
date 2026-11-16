@@ -58,6 +58,15 @@ test("homework card groups by day and escapes the ENT texts", () => {
   assert.match(html, /data-id="hw-2" data-done="0"/);
 });
 
+test("homework card: status icons are not clickable for a read-only account", () => {
+  const html = render("skolengo-homework-card", { entity: "sensor.h" }, {
+    state: "1",
+    attributes: { can_mark_done: false, homework: [{ id: "hw-1", date: day, subject: "MATHS", title: "p 41", done: false }] },
+  });
+  assert.match(html, /check\s+readonly/);
+  assert.ok(!html.includes("data-id="));
+});
+
 test("homework card hides done homework when asked", () => {
   const html = render("skolengo-homework-card", { entity: "sensor.h", display_done_homework: false }, {
     state: "0",

@@ -20,7 +20,7 @@ from .api import SkolengoAuthError, SkolengoError, SkolengoForbiddenError
 from .api.const import SERVICE_HOMEWORK
 from .const import DOMAIN
 from .entity import SkolengoStudentEntity
-from .homework import homework_summary
+from .homework import can_mark_homework, homework_summary
 
 PARALLEL_UPDATES = 1
 
@@ -38,15 +38,21 @@ async def async_setup_entry(
 
 
 class SkolengoHomeworkTodo(SkolengoStudentEntity, TodoListEntity):
-    """The homework of a student; ticking an item marks it done in the ENT."""
+    """The homework of a student; ticking an item marks it done in the ENT.
 
-    # Only the status of an item can change (the text belongs to the teacher).
-    _attr_supported_features = TodoListEntityFeature.UPDATE_TODO_ITEM
+    Read-only when the ENT does not let this account mark homework as done (parent accounts usually
+    only get ``READ_HOMEWORK_ASSIGNMENTS``; the student gets ``MARK_HOMEWORK_ASSIGNMENT_AS_DONE``).
+    """
 
     def __init__(self, coordinator, student) -> None:
         """Homework list of one student."""
         super().__init__(coordinator, student, SERVICE_HOMEWORK, "homework")
         self._school_id = student.school.id if student.school else None
+        self._can_mark = can_mark_homework(coordinator, self._school_id)
+        # Only the status of an item can change (the text belongs to the teacher).
+        self._attr_supported_features = (
+            TodoListEntityFeature.UPDATE_TODO_ITEM if self._can_mark else TodoListEntityFeature(0)
+        )
 
     @property
     def todo_items(self) -> list[TodoItem] | None:
@@ -76,6 +82,8 @@ class SkolengoHomeworkTodo(SkolengoStudentEntity, TodoListEntity):
                 translation_key="homework_not_found",
                 translation_placeholders={"uid": str(item.uid)},
             )
+        if not self._can_mark:
+            raise ServiceValidationError(translation_domain=DOMAIN, translation_key="homework_read_only")
         done = item.status == TodoItemStatus.COMPLETED
         if done == current.done:
             return

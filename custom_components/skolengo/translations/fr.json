@@ -119,6 +119,9 @@
     },
     "auth_expired": {
       "message": "La session Skolengo a expiré ; reconnectez-vous."
+    },
+    "homework_read_only": {
+      "message": "Ce compte ne peut que lire les devoirs : l'ENT ne permet qu'à l'élève de les marquer comme faits."
     }
   }
 }
