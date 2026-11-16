@@ -11,12 +11,14 @@ from dataclasses import dataclass
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.exceptions import ConfigEntryAuthFailed, ConfigEntryNotReady
+from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from .api import Account, SkolengoAuthError, SkolengoClient, SkolengoError, Tokens
+from .api import AppConfig, SkolengoClient, SkolengoError, Tokens, async_get_app_config
 from .config_flow import school_from_dict
-from .const import CONF_SCHOOL, CONF_TOKENS
+from .const import CONF_SCHOOL, CONF_TOKENS, DOMAIN
+from .coordinator import SkolengoCoordinator
+from .entity import account_device_info, student_device_info
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -28,7 +30,7 @@ class SkolengoData:
     """Runtime data of a config entry."""
 
     client: SkolengoClient
-    account: Account
+    coordinator: SkolengoCoordinator
 
 
 type SkolengoConfigEntry = ConfigEntry[SkolengoData]
@@ -37,6 +39,7 @@ type SkolengoConfigEntry = ConfigEntry[SkolengoData]
 async def async_setup_entry(hass: HomeAssistant, entry: SkolengoConfigEntry) -> bool:
     """Set up Skolengo from a config entry."""
     school = school_from_dict(entry.data[CONF_SCHOOL])
+    session = async_get_clientsession(hass)
 
     @callback
     def _save_tokens(tokens: Tokens) -> None:
@@ -44,19 +47,23 @@ async def async_setup_entry(hass: HomeAssistant, entry: SkolengoConfigEntry) -> 
         hass.config_entries.async_update_entry(entry, data={**entry.data, CONF_TOKENS: tokens.as_dict()})
 
     client = SkolengoClient(
-        async_get_clientsession(hass),
+        session,
         Tokens.from_dict(entry.data[CONF_TOKENS]),
         school.ems_code,
         on_tokens_refreshed=_save_tokens,
     )
     try:
-        account = await client.async_get_account()
-    except SkolengoAuthError as err:
-        raise ConfigEntryAuthFailed("the Skolengo session expired, sign in again") from err
+        app_config = await async_get_app_config(session)
     except SkolengoError as err:
-        raise ConfigEntryNotReady(f"cannot reach Skolengo: {err}") from err
+        _LOGGER.debug("Skolengo app config unavailable, using default retry hints: %s", err)
+        app_config = AppConfig()
 
-    entry.runtime_data = SkolengoData(client=client, account=account)
+    coordinator = SkolengoCoordinator(hass, entry, client, app_config)
+    # Raises ConfigEntryAuthFailed (reauth) or ConfigEntryNotReady (retry later).
+    await coordinator.async_config_entry_first_refresh()
+    entry.runtime_data = SkolengoData(client=client, coordinator=coordinator)
+
+    _async_register_devices(hass, entry, coordinator)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
 
@@ -64,3 +71,26 @@ async def async_setup_entry(hass: HomeAssistant, entry: SkolengoConfigEntry) -> 
 async def async_unload_entry(hass: HomeAssistant, entry: SkolengoConfigEntry) -> bool:
     """Unload a config entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
+
+
+async def async_remove_config_entry_device(
+    hass: HomeAssistant, entry: SkolengoConfigEntry, device: dr.DeviceEntry
+) -> bool:
+    """Allow removing a device that no longer matches a student (or the account) of the entry."""
+    snapshot = entry.runtime_data.coordinator.data
+    current = {(DOMAIN, s.id) for s in snapshot.account.students} | {(DOMAIN, snapshot.account.id)}
+    return not device.identifiers & current
+
+
+@callback
+def _async_register_devices(
+    hass: HomeAssistant, entry: SkolengoConfigEntry, coordinator: SkolengoCoordinator
+) -> None:
+    """One device per student with at least one granted service, plus the account if it has messaging."""
+    registry = dr.async_get(hass)
+    snapshot = coordinator.data
+    for data in snapshot.students.values():
+        if data.services:
+            registry.async_get_or_create(config_entry_id=entry.entry_id, **student_device_info(data.student))
+    if snapshot.has_messages:
+        registry.async_get_or_create(config_entry_id=entry.entry_id, **account_device_info(snapshot.account))

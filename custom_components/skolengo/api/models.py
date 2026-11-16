@@ -23,6 +23,14 @@ class School:
 
 
 @dataclass(frozen=True, slots=True)
+class AppConfig:
+    """Public configuration of the mobile app: how clients should retry failed calls."""
+
+    retry_delay: float = 0.5  # seconds
+    max_retries: int = 3
+
+
+@dataclass(frozen=True, slots=True)
 class OidcConfig:
     """The endpoints of an ENT's OpenID Connect provider."""
 
