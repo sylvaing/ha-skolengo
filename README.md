@@ -31,6 +31,64 @@ The integration signs in itself, without a browser; the password is not stored, 
 Grades and absences are out of scope for v0.1.0: on schools that run Pronote, Skolengo only proxies them
 and the API often fails. The [Pronote integration](https://github.com/delphiki/hass-pronote) covers them.
 
+## Entities
+
+| Entity | Per | State | For |
+| --- | --- | --- | --- |
+| `sensor.<student>_homework` | student (homework enabled) | homework not done | homework card |
+| `todo.<student>_homework` | student (homework enabled) | homework not done | tick = done in the ENT |
+| `sensor.<student>_timetable` | student (timetable enabled) | lessons of the current school day | timetable card |
+| `sensor.<student>_next_lesson` | student (timetable enabled) | start of the next lesson | automations |
+| `calendar.<student>_timetable` | student (timetable enabled) | current / next lesson | calendar |
+| `sensor.<account>_unread_messages` | account (messaging enabled) | unread conversations | messages card |
+
+The event `skolengo_new_message` is fired for each new unread message (`subject`, `sender`, `date`,
+`preview`), to build notifications.
+
+## Cards
+
+The cards are shipped with the integration and loaded automatically: no resource to add. Add them from
+the card picker (search "Skolengo") or in YAML. Their look and options follow the Pronote cards of
+[lovelace-pronote](https://github.com/delphiki/lovelace-pronote) (independent code).
+
+```yaml
+type: custom:skolengo-homework-card
+entity: sensor.lou_martin_homework
+display_header: true
+current_week_only: false
+display_done_homework: true
+reduce_done_homework: true   # done items: subject only
+enable_slider: false         # one day at a time, with arrows
+```
+
+Click the circle of a homework to mark it done or not done (through the student's to-do list; set
+`todo_entity` if it is not found automatically).
+
+```yaml
+type: custom:skolengo-timetable-card
+entity: sensor.lou_martin_timetable
+display_header: true
+display_lunch_break: true
+display_classroom: true
+display_teacher: true
+display_day_hours: true
+dim_ended_lessons: true
+display_free_time_slots: true
+max_days: 5
+current_week_only: false
+enable_slider: false
+switch_to_next_day: true     # once today's lessons are over, start at the next school day
+```
+
+```yaml
+type: custom:skolengo-messages-card
+entity: sensor.alex_martin_unread_messages
+display_header: true
+max_messages: 5
+unread_only: false
+ent_url: https://your-ent.example   # optional "Open the ENT" link
+```
+
 ## Documentation
 
 - [Skolengo mobile API — unofficial reference](docs/skolengo-api.md)
