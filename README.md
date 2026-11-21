@@ -47,6 +47,16 @@ The event `skolengo_new_message` is fired for each new unread message (`subject`
 
 ## Cards
 
+<p>
+  <img src="https://raw.githubusercontent.com/sylvaing/ha-skolengo/main/docs/screenshots/homework.png" alt="Homework card" width="32%">
+  <img src="https://raw.githubusercontent.com/sylvaing/ha-skolengo/main/docs/screenshots/timetable.png" alt="Timetable card" width="32%">
+  <img src="https://raw.githubusercontent.com/sylvaing/ha-skolengo/main/docs/screenshots/messages.png" alt="Messages card" width="32%">
+</p>
+<img src="https://raw.githubusercontent.com/sylvaing/ha-skolengo/main/docs/screenshots/dark.png" alt="The three cards with the dark theme" width="97%">
+
+<sub>Invented data. The images are made from <a href="docs/screenshots/demo.html">docs/screenshots/demo.html</a>
+with <code>scripts/make_screenshots.py</code>.</sub>
+
 The cards are shipped with the integration and loaded automatically: no resource to add. Add them from
 the card picker (search "Skolengo") or in YAML. Their look and options follow the Pronote cards of
 [lovelace-pronote](https://github.com/delphiki/lovelace-pronote) (independent code).

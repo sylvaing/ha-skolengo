@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skolengo cards demo</title>
+<!--
+  Demo page for the README screenshots: the real cards module with invented data (no ENT, no
+  Home Assistant). Open it in a browser; add ?theme=dark for the dark theme,
+  ?card=homework|timetable|messages for one card. scripts/make_screenshots.py makes the README images.
+  ha-card and ha-icon are replaced by small stand-ins with Home Assistant's default look.
+-->
+<style>
+  :root {
+    --primary-color: #03a9f4; --primary-text-color: #212121; --secondary-text-color: #727272;
+    --divider-color: rgba(0,0,0,.12); --card-background-color: #fff; --ha-card-background: #fff;
+    --error-color: #db4437; --warning-color: #ffa600; --success-color: #43a047; --text-primary-color: #fff;
+    --page-background: #fafafa;
+  }
+  :root[data-theme="dark"] {
+    --primary-text-color: #e1e1e1; --secondary-text-color: #9b9b9b; --divider-color: rgba(225,225,225,.12);
+    --card-background-color: #1c1c1c; --ha-card-background: #1c1c1c; --page-background: #111;
+  }
+  body { margin: 0; padding: 24px; background: var(--page-background); color: var(--primary-text-color);
+    font-family: Roboto, "Noto Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 400px)); gap: 16px; align-items: start; }
+</style>
+</head>
+<body>
+<div class="grid">
+  <skolengo-homework-card id="homework"></skolengo-homework-card>
+  <skolengo-timetable-card id="timetable"></skolengo-timetable-card>
+  <skolengo-messages-card id="messages"></skolengo-messages-card>
+</div>
+<script>
+  const params = new URLSearchParams(location.search);
+  if (params.get("theme") === "dark") document.documentElement.dataset.theme = "dark";
+
+  customElements.define("ha-card", class extends HTMLElement {
+    constructor() {
+      super();
+      this.attachShadow({ mode: "open" }).innerHTML = `<style>:host { display: block; background: var(--ha-card-background);
+        border-radius: 12px; border: 1px solid var(--divider-color); color: var(--primary-text-color); }</style><slot></slot>`;
+    }
+  });
+  const ICONS = {
+    "mdi:check-circle": "M12 2C6.5 2 2 6.5 2 12S6.5 22 12 22 22 17.5 22 12 17.5 2 12 2M10 17L5 12L6.41 10.59L10 14.17L17.59 6.58L19 8L10 17Z",
+    "mdi:checkbox-blank-circle-outline": "M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z",
+    "mdi:chevron-left": "M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z",
+    "mdi:chevron-right": "M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z",
+  };
+  customElements.define("ha-icon", class extends HTMLElement {
+    connectedCallback() {
+      this.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" style="display:block;fill:currentColor"><path d="${ICONS[this.getAttribute("icon")] || ""}"/></svg>`;
+    }
+  });
+</script>
+<script src="../../custom_components/skolengo/frontend/skolengo-cards.js"></script>
+<script>
+  // Invented data, relative to today so the demo always looks current.
+  const p = (n) => String(n).padStart(2, "0");
+  const day = (offset) => { const d = new Date(); d.setDate(d.getDate() + offset); return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`; };
+  // next weekday at or after today + offset
+  const school = (offset) => { let o = offset; for (;;) { const w = new Date(Date.now() + o * 864e5).getDay(); if (w !== 0 && w !== 6 && w !== 3) return o; o++; } };
+  const d1 = school(1), d2 = school(d1 + 1);
+  const hw = (id, offset, subject, color, title, description, done, teacher) =>
+    ({ id, date: day(offset), due: `${day(offset)}T08:00:00+01:00`, subject, title, description, teacher, done, background_color: color });
+  const lesson = (id, offset, start, end, subject, color, room, teacher, extra = {}) => ({
+    id, start_at: `${day(offset)}T${start}:00+01:00`, end_at: `${day(offset)}T${end}:00+01:00`, start_time: start, end_time: end,
+    lesson: subject, classroom: room, teacher_name: teacher, canceled: false, status: "upcoming", homework_due: false,
+    background_color: color, is_morning: start < "12:00", is_afternoon: start >= "12:00", ...extra,
+  });
+  const C = { ma: "#185abc", fr: "#8e24aa", hg: "#f4b400", an: "#d81b60", sv: "#43a047", pc: "#00897b", es: "#e53935", ep: "#90caf9" };
+  const states = {
+    "sensor.lou_martin_homework": { state: "3", attributes: { student: "Lou MARTIN", can_mark_done: true, homework: [
+      hw("h1", d1, "MATHEMATIQUES", C.ma, "Fiche 5", "Fiche 5 : exercices 1 et 3", false, "Mme C. DUPONT"),
+      hw("h2", d1, "ANGLAIS LV1", C.an, "Vocabulary", "Learn the vocabulary of unit 4", true, "M. J. SMITH"),
+      hw("h3", d1, "FRANCAIS", C.fr, "Lecture", "Lire le chapitre 3 du roman", true, "Mme A. BERNARD"),
+      hw("h4", d2, "PHYSIQUE-CHIMIE", C.pc, "Exercice", "Exercice 1 p. 151 et réviser l'évaluation", false, "Mme S. LEROY"),
+      hw("h5", d2, "HISTOIRE-GEOGRAPHIE", C.hg, "Croquis", "Terminer le croquis de la France", false, "M. P. MOREAU"),
+    ] } },
+    "sensor.lou_martin_timetable": { state: "6", attributes: { student: "Lou MARTIN", day: day(d1), lessons: [
+      lesson("l1", d1, "08:05", "09:00", "MATHEMATIQUES", C.ma, "B21", "Mme C. DUPONT", { homework_due: true }),
+      lesson("l2", d1, "09:00", "09:55", "ANGLAIS LV1", C.an, "B12", "M. J. SMITH", { canceled: true, status: "canceled" }),
+      lesson("l3", d1, "10:10", "11:05", "FRANCAIS", C.fr, "B04", "Mme A. BERNARD"),
+      lesson("l4", d1, "11:05", "12:00", "SCIENCES VIE & TERRE", C.sv, "Labo 2", "M. L. PETIT"),
+      lesson("l5", d1, "13:30", "14:25", "HISTOIRE-GEOGRAPHIE", C.hg, "B17", "M. P. MOREAU"),
+      lesson("l6", d1, "14:25", "16:20", "ED.PHYSIQUE & SPORT.", C.ep, "Gymnase", "Mme N. GIRARD"),
+    ] } },
+    "sensor.martin_family_unread_messages": { state: "2", attributes: { total: 24, messages: [
+      { id: "m1", subject: "Sortie au musée jeudi", sender: "Mme A. BERNARD", date: `${day(0)}T07:42:00+01:00`, read: false, participations: 1,
+        preview: "Bonjour, la classe de 4e A visitera le musée jeudi matin. Départ à 8 h 15 devant le collège, retour pour le déjeuner." },
+      { id: "m2", subject: "Réunion parents-professeurs", sender: "Vie scolaire", date: `${day(-1)}T16:10:00+01:00`, read: false, participations: 1,
+        preview: "La réunion parents-professeurs du 1er trimestre aura lieu le mardi 8 décembre à partir de 17 h." },
+      { id: "m3", subject: "Atelier robotique", sender: "M. L. PETIT", date: `${day(-3)}T12:05:00+01:00`, read: true, participations: 3,
+        preview: "Merci pour vos réponses. L'atelier reprendra après les vacances, le mercredi de 13 h à 15 h." },
+      { id: "m4", subject: "Carnet de correspondance", sender: "Mme C. DUPONT", date: `${day(-6)}T18:30:00+01:00`, read: true, participations: 2,
+        preview: "Bonjour, pensez à signer le carnet de correspondance pour la sortie." },
+    ] } },
+  };
+  const hass = { states, locale: { language: "fr" }, language: "fr", entities: {}, callService: async () => {} };
+  const cards = {
+    homework: { entity: "sensor.lou_martin_homework" },
+    timetable: { entity: "sensor.lou_martin_timetable", max_days: 1 },
+    messages: { entity: "sensor.martin_family_unread_messages", max_messages: 4 },
+  };
+  // ?card=homework shows that card only (one screenshot per card).
+  const only = params.get("card");
+  for (const [id, config] of Object.entries(cards)) {
+    const el = document.getElementById(id);
+    if (only && only !== id) { el.remove(); continue; }
+    el.setConfig(config);
+    el.hass = hass;
+  }
+</script>
+</body>
+</html>

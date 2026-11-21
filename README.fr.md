@@ -50,6 +50,15 @@ L'événement `skolengo_new_message` est émis pour chaque nouveau message non l
 
 ## Cartes
 
+<p>
+  <img src="https://raw.githubusercontent.com/sylvaing/ha-skolengo/main/docs/screenshots/homework.png" alt="Carte des devoirs" width="32%">
+  <img src="https://raw.githubusercontent.com/sylvaing/ha-skolengo/main/docs/screenshots/timetable.png" alt="Carte de l'emploi du temps" width="32%">
+  <img src="https://raw.githubusercontent.com/sylvaing/ha-skolengo/main/docs/screenshots/messages.png" alt="Carte des messages" width="32%">
+</p>
+<img src="https://raw.githubusercontent.com/sylvaing/ha-skolengo/main/docs/screenshots/dark.png" alt="Les trois cartes en thème sombre" width="97%">
+
+<sub>Données inventées. Les images sont faites à partir de <a href="docs/screenshots/demo.html">docs/screenshots/demo.html</a> avec <code>scripts/make_screenshots.py</code>.</sub>
+
 Les cartes sont livrées avec l'intégration et chargées automatiquement : aucune ressource à ajouter.
 Ajoutez-les depuis le sélecteur de cartes (cherchez « Skolengo ») ou en YAML. Leur apparence et leurs
 options reprennent les cartes Pronote de [lovelace-pronote](https://github.com/delphiki/lovelace-pronote)
