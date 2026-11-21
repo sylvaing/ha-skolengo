@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- **README**: screenshots of the cards made from invented data (`docs/screenshots/demo.html`).
 - **Blueprints**: notify new messages; evening reminder of the homework due on the next school day (#20).
 
 ## 0.1.0 — 2026-11-21
