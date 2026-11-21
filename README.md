@@ -10,11 +10,11 @@ many French regions (e.g. *Mon ENT Occitanie*). It uses the same API as the Skol
 
 ## Status
 
-🚧 **In development — not usable yet.** Progress is tracked in the
-[issues](https://github.com/sylvaing/ha-skolengo/issues) and
-[milestones](https://github.com/sylvaing/ha-skolengo/milestones).
+**v0.1.0 — first release.** Tested with a parent account of *Mon ENT Occitanie*. Other Skolengo ENTs
+should work but are untested: reports are welcome in the
+[issues](https://github.com/sylvaing/ha-skolengo/issues). Changes are listed in the [changelog](CHANGELOG.md).
 
-## Planned features (v0.1.0)
+## Features
 
 Per student, only for the services their school enables:
 
@@ -96,8 +96,14 @@ ent_url: https://your-ent.example   # optional "Open the ENT" link
 
 ## Installation
 
-Not available yet. Once v0.1.0 is released it will be installable through [HACS](https://hacs.xyz) as a
-custom repository.
+Through [HACS](https://hacs.xyz):
+
+1. HACS → ⋮ → **Custom repositories** → add `https://github.com/sylvaing/ha-skolengo`, type **Integration**.
+2. Install **Skolengo (ENT)**, then restart Home Assistant.
+3. **Settings → Devices & services → Add integration → Skolengo (ENT)**: find your school, choose how you
+   sign in, then type your EduConnect login and password.
+
+The cards are available right away (refresh the browser once after the restart).
 
 ## Privacy
 
