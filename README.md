@@ -90,6 +90,19 @@ unread_only: false
 ent_url: https://your-ent.example   # optional "Open the ENT" link
 ```
 
+## Notification blueprints
+
+Two automation blueprints, to import in one click (or with **Settings → Automations & scenes →
+Blueprints → Import blueprint** and the file's GitHub address):
+
+| Blueprint | What it does | Import |
+| --- | --- | --- |
+| [New messages](blueprints/automation/skolengo/new_message.yaml) | A notification for each new message of the ENT: subject, sender, beginning of the message. | [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fsylvaing%2Fha-skolengo%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fskolengo%2Fnew_message.yaml) |
+| [Homework reminder](blueprints/automation/skolengo/homework_reminder.yaml) | Every evening at the chosen time, the homework due on the next school day and not done yet (on Friday and Saturday: Monday's). Nothing is sent when there is none. | [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fsylvaing%2Fha-skolengo%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fskolengo%2Fhomework_reminder.yaml) |
+
+Both notify a phone running the Home Assistant app, and can run other actions too (another
+notification service, a speaker…).
+
 ## Documentation
 
 - [Skolengo mobile API — unofficial reference](docs/skolengo-api.md)

@@ -1,0 +1,76 @@
+blueprint:
+  name: Skolengo — notify new messages
+  description: >-
+    Send a notification when a new message arrives in the Skolengo (ENT) inbox: subject, sender and
+    the beginning of the message. Uses the `skolengo_new_message` event of the Skolengo integration.
+  domain: automation
+  source_url: https://github.com/sylvaing/ha-skolengo/blob/main/blueprints/automation/skolengo/new_message.yaml
+  author: ha-skolengo
+  homeassistant:
+    min_version: "2026.1.0"
+  input:
+    notify_device:
+      name: Device to notify
+      description: Phone or tablet running the official Home Assistant app.
+      selector:
+        device:
+          filter:
+            integration: mobile_app
+    config_entry:
+      name: Skolengo account (optional)
+      description: Only messages of this account. Leave empty for every Skolengo account.
+      default: ""
+      selector:
+        config_entry:
+          integration: skolengo
+    preview_length:
+      name: Preview length
+      description: Characters of the message shown in the notification (0 = none).
+      default: 200
+      selector:
+        number:
+          min: 0
+          max: 300
+          step: 10
+          mode: slider
+    extra_actions:
+      name: Other actions (optional)
+      description: >-
+        Also run these actions, e.g. another notification service. The variables `subject`,
+        `sender`, `preview` and `date` are available.
+      default: []
+      selector:
+        action: {}
+
+mode: queued
+max: 10
+
+triggers:
+  - trigger: event
+    event_type: skolengo_new_message
+
+variables:
+  config_entry: !input config_entry
+  preview_length: !input preview_length
+  subject: "{{ trigger.event.data.subject or '—' }}"
+  sender: "{{ trigger.event.data.sender or '' }}"
+  date: "{{ trigger.event.data.date }}"
+  preview: >-
+    {% set text = trigger.event.data.preview or '' %}
+    {% set n = preview_length | int(0) %}
+    {{ '' if n == 0 else (text[:n] ~ ('…' if text | length > n else '')) }}
+
+conditions:
+  - condition: template
+    value_template: "{{ not config_entry or trigger.event.data.config_entry_id == config_entry }}"
+
+actions:
+  - alias: Notify the device
+    domain: mobile_app
+    type: notify
+    device_id: !input notify_device
+    title: "✉️ {{ subject }}"
+    message: "{{ ([sender, preview] | select | join(' — ')) or subject }}"
+  - alias: Other actions
+    choose: []
+    default: !input extra_actions
