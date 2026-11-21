@@ -95,6 +95,19 @@ unread_only: false
 ent_url: https://votre-ent.example   # lien « Ouvrir l'ENT », facultatif
 ```
 
+## Modèles de notification (blueprints)
+
+Deux modèles d'automatisation, à importer en un clic (ou par **Paramètres → Automatisations et scènes →
+Blueprints → Importer un blueprint** avec l'adresse GitHub du fichier) :
+
+| Modèle | Ce qu'il fait | Importer |
+| --- | --- | --- |
+| [Nouveaux messages](blueprints/automation/skolengo/new_message.yaml) | Une notification pour chaque nouveau message de l'ENT : objet, expéditeur, début du message. | [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fsylvaing%2Fha-skolengo%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fskolengo%2Fnew_message.yaml) |
+| [Rappel des devoirs](blueprints/automation/skolengo/homework_reminder.yaml) | Chaque soir à l'heure choisie, les devoirs pour le prochain jour de classe pas encore faits (le vendredi et le samedi : ceux du lundi). Rien n'est envoyé s'il n'y en a pas. | [![Import](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2Fsylvaing%2Fha-skolengo%2Fblob%2Fmain%2Fblueprints%2Fautomation%2Fskolengo%2Fhomework_reminder.yaml) |
+
+Les deux notifient un téléphone équipé de l'application Home Assistant, et peuvent aussi lancer
+d'autres actions (autre service de notification, enceinte…).
+
 ## Documentation
 
 - [API mobile Skolengo — référence non officielle](docs/skolengo-api.md) (en anglais)

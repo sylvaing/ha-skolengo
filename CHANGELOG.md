@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **Blueprints**: notify new messages; evening reminder of the homework due on the next school day (#20).
+
 ## 0.1.0 — 2026-11-21
 
 First release.

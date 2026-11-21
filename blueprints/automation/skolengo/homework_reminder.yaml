@@ -1,0 +1,98 @@
+blueprint:
+  name: Skolengo — homework reminder
+  description: >-
+    Every evening, send a reminder of the homework due on the next school day that is not done yet.
+    Nothing is sent when there is none. Uses the homework sensor of the Skolengo integration.
+  domain: automation
+  source_url: https://github.com/sylvaing/ha-skolengo/blob/main/blueprints/automation/skolengo/homework_reminder.yaml
+  author: ha-skolengo
+  homeassistant:
+    min_version: "2026.1.0"
+  input:
+    homework_entity:
+      name: Homework sensor
+      description: The "Homework" sensor of a student.
+      selector:
+        entity:
+          filter:
+            integration: skolengo
+            domain: sensor
+    notify_device:
+      name: Device to notify
+      description: Phone or tablet running the official Home Assistant app.
+      selector:
+        device:
+          filter:
+            integration: mobile_app
+    reminder_time:
+      name: Time
+      default: "19:00:00"
+      selector:
+        time: {}
+    skip_weekend:
+      name: Friday and Saturday remind for Monday
+      description: On Friday and Saturday, look at Monday's homework instead of the next day's.
+      default: true
+      selector:
+        boolean: {}
+    language:
+      name: Language of the notification
+      default: fr
+      selector:
+        select:
+          options:
+            - label: Français
+              value: fr
+            - label: English
+              value: en
+    extra_actions:
+      name: Other actions (optional)
+      description: >-
+        Also run these actions. The variables `student`, `due` (list of homework) and `text` are
+        available.
+      default: []
+      selector:
+        action: {}
+
+mode: single
+
+triggers:
+  - trigger: time
+    at: !input reminder_time
+
+variables:
+  homework_entity: !input homework_entity
+  skip_weekend: !input skip_weekend
+  language: !input language
+  days_ahead: >-
+    {% set wd = now().weekday() %}
+    {{ (3 if wd == 4 else 2 if wd == 5 else 1) if skip_weekend else 1 }}
+  target_date: "{{ (now() + timedelta(days=days_ahead | int)).date() | string }}"
+  student: "{{ state_attr(homework_entity, 'student') or state_attr(homework_entity, 'friendly_name') }}"
+  due: >-
+    {{ (state_attr(homework_entity, 'homework') or [])
+       | selectattr('date', 'eq', target_date) | rejectattr('done') | list }}
+  text: >-
+    {% for h in due %}• {{ h.subject or '?' }} : {{ h.title or h.description }}{{ '\n' if not loop.last }}{% endfor %}
+  title: >-
+    {% set day = 'demain' if days_ahead | int == 1 else 'lundi' %}
+    {% if language == 'en' %}
+    📚 {{ student }}: {{ due | length }} homework for {{ 'tomorrow' if days_ahead | int == 1 else 'Monday' }}
+    {% else %}
+    📚 {{ student }} : {{ due | length }} devoir{{ 's' if due | length > 1 }} pour {{ day }}
+    {% endif %}
+
+conditions:
+  - condition: template
+    value_template: "{{ due | length > 0 }}"
+
+actions:
+  - alias: Notify the device
+    domain: mobile_app
+    type: notify
+    device_id: !input notify_device
+    title: "{{ title | trim }}"
+    message: "{{ text }}"
+  - alias: Other actions
+    choose: []
+    default: !input extra_actions
