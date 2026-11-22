@@ -10,10 +10,42 @@ régions (par exemple *Mon ENT Occitanie*). Elle utilise la même API que l'appl
 
 ## État
 
-**v0.1.0, première version.** Testée avec un compte parent de *Mon ENT Occitanie*. Les autres ENT
-Skolengo devraient fonctionner mais n'ont pas été testés : les retours sont bienvenus dans les
+**v0.2.0.** Testée avec un compte parent de *Mon ENT Occitanie*. Les autres ENT Skolengo (voir
+ci-dessous) devraient fonctionner mais n'ont pas été testés : les retours sont bienvenus dans les
 [tickets](https://github.com/sylvaing/ha-skolengo/issues). Les changements sont listés dans le
 [journal des modifications](CHANGELOG.md).
+
+## ENT pris en charge
+
+Skolengo fait tourner l'ENT de plusieurs régions et départements. Le tableau liste les ENT trouvés dans
+l'annuaire des établissements Skolengo (celui où cherche l'application mobile) en novembre 2026, avec
+leur nombre d'établissements. Tous les ENT français proposent la connexion **EduConnect** pour les
+parents et les élèves, celle qu'utilise l'intégration : ils devraient donc tous fonctionner.
+
+| ENT | Territoire | Établissements | État |
+| --- | --- | ---: | --- |
+| [Mon Bureau Numérique](https://www.monbureaunumerique.fr) | Région Grand Est (lycées et collèges) | ~870 | devrait fonctionner |
+| [ENT Auvergne-Rhône-Alpes](https://www.ent.auvergnerhonealpes.fr) | Région Auvergne-Rhône-Alpes | ~800 | devrait fonctionner |
+| [Mon ENT Occitanie](https://www.mon-ent-occitanie.fr) | Région Occitanie (académies de Montpellier et de Toulouse) | ~710 | **testé** (parent, Toulouse) |
+| [ECLAT-BFC](https://eclat-bfc.fr) | Région Bourgogne-Franche-Comté, écoles comprises | ~670 | devrait fonctionner |
+| [Webcollège](https://www.webcollege.seinesaintdenis.fr) | Collèges de Seine-Saint-Denis (93) | ~130 | devrait fonctionner |
+| [Arsène 76](https://arsene76.fr) | Collèges de Seine-Maritime (76) | ~110 | devrait fonctionner |
+| [Mon collège Val-de-Marne](https://moncollege.valdemarne.fr) | Collèges du Val-de-Marne (94) | ~110 | devrait fonctionner |
+| [eCollège Haute-Garonne](https://ecollege.haute-garonne.fr) | Collèges de Haute-Garonne (31) | ~100 | devrait fonctionner |
+| [Agora 06](https://agora06.fr) | Collèges des Alpes-Maritimes (06) | ~80 | devrait fonctionner |
+| [ENT27](https://ent27.fr) | Collèges de l'Eure (27) | ~55 | devrait fonctionner |
+| [ENT Creuse](https://www.entcreuse.fr) | Collèges de la Creuse (23) | ~15 | devrait fonctionner |
+| Skolengo (hébergé) | Établissements privés et lycées français à l'étranger | ~50 | non testé : comptes ENT locaux seulement |
+| schulen.be | Communauté germanophone de Belgique | 5 | non testé : comptes ENT locaux seulement |
+
+Choisissez l'option EduConnect quand l'intégration demande comment vous vous connectez (*Élève ou
+parent…*, avec votre académie si l'ENT en couvre plusieurs). Les autres choix (enseignants et personnels
+par leur académie, *Autres comptes et invités* / comptes ENT locaux) ne sont pas testés. FranceConnect,
+proposé sur la page EduConnect, ne peut pas fonctionner : il faut un navigateur. Utilisez plutôt votre
+identifiant et votre mot de passe EduConnect.
+
+Comptage fait avec le point d'accès public `/schools` ; les ENT de test et de démonstration sont exclus.
+Votre ENT fonctionne, ou pas ? Dites-le dans un [ticket](https://github.com/sylvaing/ha-skolengo/issues).
 
 ## Fonctions
 

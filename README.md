@@ -10,9 +10,40 @@ many French regions (e.g. *Mon ENT Occitanie*). It uses the same API as the Skol
 
 ## Status
 
-**v0.1.0 — first release.** Tested with a parent account of *Mon ENT Occitanie*. Other Skolengo ENTs
+**v0.2.0.** Tested with a parent account of *Mon ENT Occitanie*. The other Skolengo ENTs (see below)
 should work but are untested: reports are welcome in the
 [issues](https://github.com/sylvaing/ha-skolengo/issues). Changes are listed in the [changelog](CHANGELOG.md).
+
+## Supported ENTs
+
+Skolengo runs the ENT of several French regions and départements. The table lists the ENTs found in the
+Skolengo school directory (the one the mobile app searches) in November 2026, with their number of
+schools. All the French ones offer **EduConnect** sign-in for parents and students, which is what the
+integration uses, so they should all work.
+
+| ENT | Area | Schools | Status |
+| --- | --- | ---: | --- |
+| [Mon Bureau Numérique](https://www.monbureaunumerique.fr) | Grand Est region (lycées and collèges) | ~870 | should work |
+| [ENT Auvergne-Rhône-Alpes](https://www.ent.auvergnerhonealpes.fr) | Auvergne-Rhône-Alpes region | ~800 | should work |
+| [Mon ENT Occitanie](https://www.mon-ent-occitanie.fr) | Occitanie region (académies of Montpellier and Toulouse) | ~710 | **tested** (parent, Toulouse) |
+| [ECLAT-BFC](https://eclat-bfc.fr) | Bourgogne-Franche-Comté region, schools included | ~670 | should work |
+| [Webcollège](https://www.webcollege.seinesaintdenis.fr) | Seine-Saint-Denis (93) collèges | ~130 | should work |
+| [Arsène 76](https://arsene76.fr) | Seine-Maritime (76) collèges | ~110 | should work |
+| [Mon collège Val-de-Marne](https://moncollege.valdemarne.fr) | Val-de-Marne (94) collèges | ~110 | should work |
+| [eCollège Haute-Garonne](https://ecollege.haute-garonne.fr) | Haute-Garonne (31) collèges | ~100 | should work |
+| [Agora 06](https://agora06.fr) | Alpes-Maritimes (06) collèges | ~80 | should work |
+| [ENT27](https://ent27.fr) | Eure (27) collèges | ~55 | should work |
+| [ENT Creuse](https://www.entcreuse.fr) | Creuse (23) collèges | ~15 | should work |
+| Skolengo (hosted) | Private schools and French schools abroad | ~50 | untested: local ENT accounts only |
+| schulen.be | German-speaking Community of Belgium | 5 | untested: local ENT accounts only |
+
+Pick the EduConnect choice when the integration asks how you sign in (*Élève ou parent…*, with your
+académie when the ENT spans several). The other choices (teachers and staff through their académie,
+*Autres comptes et invités* / local ENT accounts) are not tested. FranceConnect, offered on the
+EduConnect page, cannot work: it needs a browser. Use your EduConnect login and password instead.
+
+Count measured with the public `/schools` endpoint; test and demo ENTs are left out. Your ENT works, or
+does not? Say so in an [issue](https://github.com/sylvaing/ha-skolengo/issues).
 
 ## Features
 
