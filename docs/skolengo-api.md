@@ -159,6 +159,36 @@ Each result (`type: "school"`) has attributes incl. `name`, `addressLine1`, `cit
 and `emsOIDCWellKnownUrl`, and an `id` like `SKO-E-<uuid>`. Keep `id` (→ `X-Skolengo-School-Id`),
 `emsCode` (→ `X-Skolengo-Ems-Code`) and `emsOIDCWellKnownUrl` (→ §2).
 
+Limits: `filter[text]` is required and needs at least 3 characters; `page[limit]` is at most 100; page
+with `page[offset]`, the total is in `meta.totalResourceCount`. There is no "list all" call: searching
+common words (`college`, `lycee`, `ecole`, `rue`, `avenue`…) and merging by `id` gives about 3,700
+schools (November 2026).
+
+### ENTs (`emsCode`)
+
+One `emsCode` per ENT, each with its own CAS and OIDC server (`sso.<ent domain>/oidc/.well-known`).
+Counts from the directory, November 2026; `demosclone*` (training / demo ENTs) left out:
+
+| `emsCode` | ENT | Schools | Choice page (`selection`) |
+| --- | --- | ---: | --- |
+| `gdest` | Mon Bureau Numérique (Grand Est) | 874 | `EDU` (parent/student), académies Nancy-Metz, Reims, Strasbourg, `ENT` |
+| `rra` | ENT Auvergne-Rhône-Alpes | 803 | `EDU`, académies Lyon, Grenoble, Clermont-Ferrand, `ENT` |
+| `entmip` | Mon ENT Occitanie | 709 | `MONT-EDU_parent_eleve`, `TOULO-EDU_parent_eleve`, …, `ENT` |
+| `bfc` | ECLAT-BFC (Bourgogne-Franche-Comté) | 671 | `EDU` (student), `EDU_BIS` (parent), primary schools per académie, `ENT` |
+| `cg93` | Webcollège Seine-Saint-Denis | 131 | `EDU_parent_eleve`, `AAA_enseignant`, `ENT` |
+| `cg76` | Arsène 76 (Seine-Maritime) | 108 | `EDU_parent_eleve`, …, `ENT` |
+| `cg94` | Mon collège Val-de-Marne | 107 | `EDU_parent_eleve`, …, `ENT` |
+| `cg31` | eCollège Haute-Garonne | 101 | `EDU_parent_eleve`, …, `ENT` |
+| `cg06` | Agora 06 (Alpes-Maritimes) | 77 | `EDU`, `AAA`, `ENT` |
+| `cg27` | ENT27 (Eure) | 55 | `EDU_parent_eleve`, …, `ENT` |
+| `cg23` | ENT Creuse | 16 | `EDU`, `AAA_personnel`, `ENT` |
+| `metab` | Skolengo hosted (`sso1.skolengo.com`): private schools, schools abroad | 53 | none: straight to the ENT login form |
+| `cgb` | schulen.be (German-speaking Community of Belgium) | 5 | none: straight to the ENT login form |
+| `mpdl` | `pdl.kosmoseducation.com` | 1 | none |
+
+Every French ENT offers EduConnect (`EDU*` choices) for parents and students; the integration lists the
+choices with `async_get_identity_providers`. Collèges of Haute-Garonne are on `cg31`, not on `entmip`.
+
 `GET /schools-info` / `GET /schools-info/{id}` return school news/announcements.
 
 ---

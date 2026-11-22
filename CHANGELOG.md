@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- **README**: list of the Skolengo ENTs, by region and département, with their sign-in choice (#21).
+
 ## 0.2.0 — 2026-11-21
 
 - **README**: screenshots of the cards made from invented data (`docs/screenshots/demo.html`).
